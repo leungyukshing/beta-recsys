@@ -1,6 +1,6 @@
 {
     "system": {
-        "root_dir": "../",
+        "root_dir": "default",
         "log_dir": "logs/",
         "result_dir": "results/",
         "process_dir": "processes/",
@@ -11,15 +11,14 @@
         "device": "gpu",
         "seed": 2020,
         "metrics": ["ndcg", "precision", "recall", "map"],
-        "k": [5,10,20],
+        "k": [5, 10, 20],
         "valid_metric": "ndcg",
         "valid_k": 10,
-        "result_file": "triple2vec_result.csv"
+        "result_file": "ngcf_result.csv"
     },
     "dataset": {
-        "dataset": "dunnhumby",
-        "data_split": "temporal",
-        "item_fea_type": "random",
+        "dataset": "ml_100k",
+        "data_split": "leave_one_out",
         "download": false,
         "random": false,
         "test_rate": 0.2,
@@ -29,22 +28,22 @@
         "result_col": ["dataset","data_split","test_rate","n_negative"]
     },
     "model": {
-        "model": "Triple2vec",
+        "model": "NGCF",
         "config_id": "default",
-        "n_sample": 1000000,
+        "batch_size": 1024,
+        "regs": [1e-5],
         "emb_dim": 64,
-        "n_neg": 5,
-        "lr": 0.0005,
-        "batch_size": 256,
-        "batch_eval": true,
-        "dropout": 0.0,
+        "layer_size": [64, 64, 64],
+        "lr": 0.05,
         "optimizer": "adam",
-        "l2_regularization": 0.01,
-        "max_epoch": 120,
-        "save_name": "triple2vec.model",
-        "result_col": ["model","emb_dim","batch_size","n_sample","optimizer","lr"]
+        "mess_dropout": [0.1, 0.1, 0.1],
+        "loss": "bpr",
+        "max_epoch": 50,
+        "save_name": "ngcf.model",
+        "result_col": ["model","emb_dim","batch_size","optimizer","lr","regs"]
     },
     "tunable": [
-        {"name": "lr", "type": "choice", "values": [0.0005,0.00025]}
+        {"name": "lr", "type": "choice", "values": [0.1,0.05,0.0025,0.0005,0.00025]},
+        {"name": "layer_size", "type": "choice", "values": [[32,32,32],[64,64,64],[128,128,128]]}
     ]
 }
